@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI動畫師 · 暑期影展</title>
+<meta name="description" content="孩子們的暑期創作影展，用心打造的故事影片">
+
+<!-- ═══════════════════════════════════════════════════
+     老師看這裡！要新增作品就改下面這一段就好。
+     1. 把 YouTube 網址貼到 youtubeUrl
+     2. 改 title（作品標題或第幾組）
+     3. 改 students（學生名字，用逗號分隔）
+     4. 想新增作品就複製一整段 { ... } 貼到下面，記得每段中間要有逗號
+     5. 想刪除某組就把那一段 { ... } 整個刪掉
+     === 設定區開始 ═══════════════════════════════════ -->
+<script>
+const GALLERY = {
+  // 影展標題（會顯示在最上方的霓虹招牌上）
+  cinemaName: 'AI動畫師',
+  // 副標題
+  subtitle: 'Children\u2019s Story Film Festival',
+  // 場次資訊（顯示在標題下方）
+  season: '2026 暑期創作影展',
+
+  // 開場介紹（給家長看的歡迎詞，可改可留空）
+  welcome: '歡迎蒞臨孩子們的故事影展。每一部作品都是孩子們從畫角色、配音到剪輯的心血結晶。請坐下、放鬆，享受這場屬於他們的演出。',
+
+  // 作品清單 ─────────────────────────────────
+  works: [
+    {
+      title: '森林裡的小冒險',
+      students: '小明、小華、小美',
+      youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+    },
+    {
+      title: '會說話的棉花糖',
+      students: '阿翔、文文、小柔',
+      youtubeUrl: 'https://www.youtube.com/watch?v=jNQXAC9IVRw'
+    },
+    {
+      title: '消失的星星',
+      students: '泓泓、小綠、Andy',
+      youtubeUrl: 'https://www.youtube.com/watch?v=9bZkp7q19f0'
+    },
+    {
+      title: '機器人的第一個朋友',
+      students: '小傑、米米、阿德',
+      youtubeUrl: 'https://www.youtube.com/watch?v=kJQP7kiw5Fk'
+    }
+    // 想新增就在上面那行的 } 後面加一個逗號，再貼一段：
+    // ,{
+    //   title: '作品名稱',
+    //   students: '學生1、學生2',
+    //   youtubeUrl: 'https://www.youtube.com/watch?v=...'
+    // }
+  ]
+};
+</script>
+<!-- ═══════════════ 設定區結束（以下是程式碼，不用改）═════ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,700;0,6..96,900;1,6..96,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Serif+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --velvet: #5a1420;
+  --velvet-deep: #3a0a14;
+  --velvet-glow: #7a1c2c;
+  --burgundy: #4a0e1c;
+  --gold: #d4a341;
+  --gold-bright: #f0c869;
+  --gold-deep: #a8782a;
+  --cream: #f4ead0;
+  --parchment: #ede0bc;
+  --ink: #1a0a0d;
+  --ink-soft: #3a1f24;
+  --shadow-deep: rgba(0,0,0,0.6);
+  --bulb-glow: 0 0 12px rgba(240,200,105,0.7), 0 0 24px rgba(240,200,105,0.4);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+  background: var(--velvet-deep);
+  color: var(--cream);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ─────────── Theater background texture ─────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at top, rgba(212, 163, 65, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom, rgba(122, 28, 44, 0.4) 0%, transparent 60%),
+    repeating-linear-gradient(
+      90deg,
+      var(--velvet-deep) 0px,
+      var(--velvet-deep) 1px,
+      var(--velvet) 1px,
+      var(--velvet) 2px,
+      var(--velvet-deep) 2px,
+      var(--velvet-deep) 4px
+    );
+  z-index: -2;
+  pointer-events: none;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence baseFrequency='0.85' numOctaves='2'/></filter><rect width='200' height='200' filter='url(%23n)' opacity='0.08'/></svg>");
+  z-index: -1;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+/* ─────────── Curtain reveal animation ─────────── */
+.curtain {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 52%;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      var(--velvet-deep) 0px,
+      var(--velvet) 12px,
+      var(--velvet-glow) 24px,
+      var(--velvet) 36px,
+      var(--velvet-deep) 48px
+    );
+  box-shadow: inset 0 0 80px rgba(0,0,0,0.7);
+  z-index: 1000;
+  animation: curtainOpen 1.8s cubic-bezier(0.7, 0, 0.3, 1) 0.3s forwards;
+}
+
+.curtain.left { left: 0; transform-origin: left center; }
+.curtain.right { right: 0; transform-origin: right center; }
+
+.curtain.left { animation-name: curtainOpenLeft; }
+.curtain.right { animation-name: curtainOpenRight; }
+
+@keyframes curtainOpenLeft {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-105%); }
+}
+
+@keyframes curtainOpenRight {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(105%); }
+}
+
+.curtain-rope {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 28px;
+  background: linear-gradient(180deg, var(--gold-deep) 0%, var(--gold) 50%, var(--gold-deep) 100%);
+  z-index: 50;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4), inset 0 -2px 0 rgba(0,0,0,0.3);
+}
+
+.curtain-rope::before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 16px;
+  background:
+    radial-gradient(ellipse 12px 14px at 12px 0, var(--gold-deep) 0%, var(--gold-deep) 90%, transparent 90%),
+    radial-gradient(ellipse 12px 14px at 36px 0, var(--gold-deep) 0%, var(--gold-deep) 90%, transparent 90%);
+  background-size: 24px 14px;
+  background-repeat: repeat-x;
+}
+
+/* ─────────── Marquee header ─────────── */
+.marquee {
+  position: relative;
+  text-align: center;
+  padding: 70px 24px 56px;
+  margin-top: 36px;
+  background:
+    radial-gradient(ellipse at center, rgba(212,163,65,0.15) 0%, transparent 70%),
+    linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.2) 100%);
+}
+
+/* Bulb light strips */
+.bulb-row {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 0 20px;
+}
+
+.bulb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, var(--gold-bright), var(--gold) 60%, var(--gold-deep));
+  box-shadow: var(--bulb-glow);
+  animation: bulbFlicker 3s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.bulb:nth-child(odd) { animation-delay: 0.5s; }
+.bulb:nth-child(3n) { animation-delay: 1s; }
+.bulb:nth-child(4n) { animation-delay: 1.5s; }
+
+@keyframes bulbFlicker {
+  0%, 100% { opacity: 1; box-shadow: var(--bulb-glow); }
+  45% { opacity: 0.85; }
+  50% { opacity: 0.6; box-shadow: 0 0 6px rgba(240,200,105,0.4); }
+  55% { opacity: 0.9; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .curtain { display: none; }
+  .bulb { animation: none; }
+}
+
+.marquee-frame {
+  max-width: 880px;
+  margin: 32px auto;
+  padding: 36px 28px 32px;
+  border: 2px solid var(--gold);
+  position: relative;
+  background: rgba(26, 10, 13, 0.4);
+  backdrop-filter: blur(2px);
+}
+
+.marquee-frame::before,
+.marquee-frame::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--gold-bright);
+}
+
+.marquee-frame::before {
+  top: -2px;
+  left: -2px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.marquee-frame::after {
+  bottom: -2px;
+  right: -2px;
+  border-left: none;
+  border-top: none;
+}
+
+.kicker {
+  font-family: 'Bodoni Moda', serif;
+  font-weight: 400;
+  font-style: italic;
+  font-size: clamp(11px, 2.5vw, 14px);
+  letter-spacing: 0.4em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+h1.cinema-name {
+  font-family: 'Noto Serif TC', 'Bodoni Moda', serif;
+  font-weight: 900;
+  font-size: clamp(36px, 9vw, 76px);
+  line-height: 1;
+  color: var(--cream);
+  letter-spacing: 0.05em;
+  text-shadow:
+    0 2px 0 var(--gold-deep),
+    0 4px 16px rgba(0,0,0,0.6),
+    0 0 40px rgba(240,200,105,0.3);
+  margin-bottom: 18px;
+  position: relative;
+}
+
+.cinema-subtitle {
+  font-family: 'Bodoni Moda', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(13px, 3vw, 18px);
+  color: var(--gold-bright);
+  letter-spacing: 0.15em;
+  margin-bottom: 22px;
+}
+
+.ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin: 14px auto;
+  max-width: 240px;
+}
+
+.ornament-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.ornament-diamond {
+  width: 8px;
+  height: 8px;
+  background: var(--gold);
+  transform: rotate(45deg);
+  box-shadow: 0 0 8px rgba(240,200,105,0.5);
+}
+
+.season {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 500;
+  font-size: clamp(14px, 3.5vw, 20px);
+  color: var(--cream);
+  letter-spacing: 0.2em;
+}
+
+/* ─────────── Now Showing badge ─────────── */
+.now-showing-section {
+  text-align: center;
+  padding: 56px 24px 24px;
+  position: relative;
+}
+
+.now-showing {
+  display: inline-block;
+  font-family: 'Bodoni Moda', serif;
+  font-weight: 700;
+  font-size: clamp(11px, 2.5vw, 13px);
+  letter-spacing: 0.5em;
+  color: var(--ink);
+  background: var(--gold);
+  padding: 8px 28px 8px 33px;
+  text-transform: uppercase;
+  box-shadow:
+    0 4px 0 var(--gold-deep),
+    0 8px 24px rgba(0,0,0,0.4);
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.welcome-text {
+  max-width: 580px;
+  margin: 0 auto;
+  font-family: 'Noto Serif TC', serif;
+  font-size: clamp(15px, 3.5vw, 17px);
+  line-height: 1.85;
+  color: var(--parchment);
+  font-style: italic;
+  padding: 0 12px;
+}
+
+.welcome-text::before,
+.welcome-text::after {
+  content: '"';
+  font-family: 'Bodoni Moda', serif;
+  color: var(--gold);
+  font-size: 1.5em;
+  vertical-align: -0.2em;
+}
+
+.welcome-text::before { margin-right: 0.2em; }
+.welcome-text::after { margin-left: 0.1em; }
+
+/* ─────────── Gallery ─────────── */
+.gallery-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px 20px 80px;
+}
+
+.gallery-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.gallery-title {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 900;
+  font-size: clamp(24px, 5vw, 36px);
+  color: var(--gold-bright);
+  margin-bottom: 8px;
+  letter-spacing: 0.1em;
+}
+
+.gallery-title-en {
+  font-family: 'Bodoni Moda', serif;
+  font-style: italic;
+  color: var(--gold);
+  font-size: clamp(13px, 3vw, 15px);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+}
+
+@media (min-width: 640px) {
+  .gallery { grid-template-columns: repeat(2, 1fr); gap: 32px; }
+}
+
+@media (min-width: 1024px) {
+  .gallery { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ─────────── Poster card ─────────── */
+.poster {
+  background: linear-gradient(180deg, #2a0a10 0%, var(--velvet-deep) 100%);
+  border: 1px solid var(--gold-deep);
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+
+.poster:hover,
+.poster:focus-visible {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px var(--gold);
+  outline: none;
+}
+
+.poster-frame {
+  padding: 12px 12px 0;
+}
+
+.poster-thumb {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: var(--ink);
+  overflow: hidden;
+  border: 1px solid rgba(212,163,65,0.3);
+}
+
+.poster-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s, filter 0.3s;
+  filter: saturate(0.9) contrast(1.05);
+}
+
+.poster:hover .poster-thumb img {
+  transform: scale(1.06);
+  filter: saturate(1.1) contrast(1.1);
+}
+
+.poster-thumb::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.5) 100%),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 3px,
+      rgba(0,0,0,0.06) 3px,
+      rgba(0,0,0,0.06) 4px
+    );
+  pointer-events: none;
+}
+
+.play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--gold);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 0 4px rgba(240,200,105,0.2);
+  transition: transform 0.3s, background 0.3s;
+  z-index: 2;
+}
+
+.poster:hover .play-button {
+  transform: translate(-50%, -50%) scale(1.1);
+  background: var(--gold-bright);
+}
+
+.play-button::before {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 18px solid var(--ink);
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  margin-left: 5px;
+}
+
+.poster-number {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: var(--ink);
+  color: var(--gold);
+  font-family: 'Bodoni Moda', serif;
+  font-weight: 700;
+  font-size: 12px;
+  padding: 4px 10px;
+  letter-spacing: 0.15em;
+  border: 1px solid var(--gold-deep);
+  z-index: 3;
+}
+
+.poster-info {
+  padding: 22px 20px 26px;
+  text-align: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.poster-tag {
+  font-family: 'Bodoni Moda', serif;
+  font-style: italic;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.poster-title {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 900;
+  font-size: clamp(20px, 4vw, 24px);
+  color: var(--cream);
+  line-height: 1.25;
+  margin-bottom: 14px;
+  letter-spacing: 0.04em;
+}
+
+.poster-divider {
+  width: 30px;
+  height: 1px;
+  background: var(--gold);
+  margin: 0 auto 14px;
+}
+
+.poster-students {
+  font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+  font-size: 15px;
+  color: var(--parchment);
+  font-style: italic;
+  line-height: 1.5;
+  letter-spacing: 0.05em;
+}
+
+.poster-students-label {
+  display: block;
+  font-family: 'Bodoni Moda', serif;
+  font-style: normal;
+  font-size: 10px;
+  color: var(--gold-deep);
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+/* ─────────── Footer ─────────── */
+.footer {
+  text-align: center;
+  padding: 48px 24px 64px;
+  border-top: 1px solid rgba(212,163,65,0.15);
+  margin-top: 40px;
+  background: rgba(0,0,0,0.2);
+}
+
+.footer-mark {
+  font-family: 'Bodoni Moda', serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--gold);
+  letter-spacing: 0.4em;
+  margin-bottom: 12px;
+}
+
+.footer-text {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 14px;
+  color: var(--parchment);
+  line-height: 1.7;
+  font-style: italic;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.footer-end {
+  margin-top: 28px;
+  font-family: 'Bodoni Moda', serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--gold-deep);
+  letter-spacing: 0.2em;
+}
+
+/* ─────────── Modal ─────────── */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+  animation: fadeIn 0.3s ease-out;
+  overflow-y: auto;
+}
+
+.modal.visible { display: flex; }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-stage {
+  width: 100%;
+  max-width: 1100px;
+  position: relative;
+  margin: auto;
+}
+
+.modal-frame {
+  background: linear-gradient(180deg, #2a0a10 0%, var(--velvet-deep) 100%);
+  border: 2px solid var(--gold);
+  padding: 12px;
+  position: relative;
+  box-shadow: 0 0 0 6px var(--ink), 0 0 80px rgba(212,163,65,0.2);
+}
+
+.modal-frame::before,
+.modal-frame::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--gold-bright);
+}
+
+.modal-frame::before { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+.modal-frame::after { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+
+.modal-video {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: black;
+  overflow: hidden;
+}
+
+.modal-video iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.modal-info {
+  text-align: center;
+  padding: 22px 16px 12px;
+}
+
+.modal-tag {
+  font-family: 'Bodoni Moda', serif;
+  font-style: italic;
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.modal-title {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 900;
+  font-size: clamp(22px, 4vw, 30px);
+  color: var(--cream);
+  margin-bottom: 12px;
+}
+
+.modal-students {
+  font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--parchment);
+  letter-spacing: 0.05em;
+}
+
+.modal-close {
+  position: absolute;
+  top: -18px;
+  right: -18px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  font-size: 22px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+  transition: transform 0.2s, background 0.2s;
+  display: grid;
+  place-items: center;
+  font-family: 'Bodoni Moda', serif;
+  line-height: 1;
+  padding: 0;
+}
+
+.modal-close:hover {
+  transform: scale(1.1) rotate(90deg);
+  background: var(--gold-bright);
+}
+
+@media (max-width: 600px) {
+  .modal { padding: 12px; }
+  .modal-close {
+    top: 8px;
+    right: 8px;
+    width: 38px;
+    height: 38px;
+    font-size: 18px;
+    background: rgba(0,0,0,0.7);
+    color: var(--gold);
+    border-color: var(--gold);
+  }
+}
+
+/* ─────────── Empty state ─────────── */
+.empty {
+  text-align: center;
+  padding: 60px 24px;
+  border: 1px dashed var(--gold-deep);
+  background: rgba(0,0,0,0.2);
+  color: var(--parchment);
+  font-family: 'Noto Serif TC', serif;
+  font-size: 16px;
+  font-style: italic;
+}
+
+.empty strong { color: var(--gold-bright); display: block; margin-bottom: 8px; font-style: normal; }
+
+/* ─────────── Skip link for accessibility ─────────── */
+.skip {
+  position: absolute;
+  left: -9999px;
+}
+</style>
+</head>
+<body>
+
+<!-- Curtain animation -->
+<div class="curtain left" aria-hidden="true"></div>
+<div class="curtain right" aria-hidden="true"></div>
+<div class="curtain-rope" aria-hidden="true"></div>
+
+<!-- Marquee header -->
+<header class="marquee">
+  <div class="bulb-row" aria-hidden="true" id="bulbRowTop"></div>
+
+  <div class="marquee-frame">
+    <div class="kicker" id="kicker">Children's Story Film Festival</div>
+    <h1 class="cinema-name" id="cinemaName">AI動畫師</h1>
+    <div class="ornament" aria-hidden="true">
+      <div class="ornament-line"></div>
+      <div class="ornament-diamond"></div>
+      <div class="ornament-line"></div>
+    </div>
+    <div class="season" id="season">2026 暑期創作影展</div>
+  </div>
+
+  <div class="bulb-row" aria-hidden="true" id="bulbRowBottom"></div>
+</header>
+
+<!-- Now showing -->
+<section class="now-showing-section">
+  <div class="now-showing">★ 現 正 上 映 ★</div>
+  <p class="welcome-text" id="welcomeText"></p>
+</section>
+
+<!-- Gallery -->
+<section class="gallery-section">
+  <div class="gallery-header">
+    <h2 class="gallery-title">本期作品</h2>
+    <div class="gallery-title-en">Featured Programmes</div>
+  </div>
+  <div class="gallery" id="gallery"></div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-mark">★ FIN ★</div>
+  <p class="footer-text">
+    感謝所有家長今天的蒞臨。<br>
+    每一部影片都是孩子們從畫角色、配音、剪輯一手完成，<br>
+    請替他們鼓鼓掌。
+  </p>
+  <div class="footer-end">— Thank you for joining us —</div>
+</footer>
+
+<!-- Modal -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-stage">
+    <button class="modal-close" id="modalClose" aria-label="關閉">×</button>
+    <div class="modal-frame">
+      <div class="modal-video" id="modalVideo"></div>
+      <div class="modal-info">
+        <div class="modal-tag">Now Playing</div>
+        <h2 class="modal-title" id="modalTitle"></h2>
+        <div class="modal-students" id="modalStudents"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─────────── YouTube ID extraction ───────────
+function extractYouTubeId(url) {
+  if (!url) return null;
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/,
+    /^([a-zA-Z0-9_-]{11})$/
+  ];
+  for (const p of patterns) {
+    const m = url.match(p);
+    if (m) return m[1];
+  }
+  return null;
+}
+
+// ─────────── Roman numerals ───────────
+function toRoman(n) {
+  const map = [
+    ['M', 1000], ['CM', 900], ['D', 500], ['CD', 400],
+    ['C', 100], ['XC', 90], ['L', 50], ['XL', 40],
+    ['X', 10], ['IX', 9], ['V', 5], ['IV', 4], ['I', 1]
+  ];
+  let result = '';
+  for (const [letter, value] of map) {
+    while (n >= value) { result += letter; n -= value; }
+  }
+  return result;
+}
+
+// ─────────── Setup ───────────
+function setupHeader() {
+  document.getElementById('cinemaName').textContent = GALLERY.cinemaName || 'AI動畫師';
+  document.getElementById('kicker').textContent = GALLERY.subtitle || "Children's Story Film Festival";
+  document.getElementById('season').textContent = GALLERY.season || '';
+  document.getElementById('welcomeText').textContent = GALLERY.welcome || '';
+  document.title = (GALLERY.cinemaName || 'AI動畫師') + ' · ' + (GALLERY.season || '影展');
+
+  // Bulbs - count adapts to viewport
+  const makeBulbs = (id) => {
+    const row = document.getElementById(id);
+    const count = window.innerWidth < 600 ? 11 : window.innerWidth < 900 ? 17 : 23;
+    row.innerHTML = '';
+    for (let i = 0; i < count; i++) {
+      const b = document.createElement('div');
+      b.className = 'bulb';
+      row.appendChild(b);
+    }
+  };
+  makeBulbs('bulbRowTop');
+  makeBulbs('bulbRowBottom');
+}
+
+function renderGallery() {
+  const gallery = document.getElementById('gallery');
+  if (!GALLERY.works || GALLERY.works.length === 0) {
+    gallery.innerHTML = `
+      <div class="empty" style="grid-column: 1 / -1">
+        <strong>布幕拉開了，但還沒有作品上架</strong>
+        請老師打開 HTML 檔，編輯最上方的 <code>works</code> 清單來新增作品。
+      </div>`;
+    return;
+  }
+
+  gallery.innerHTML = GALLERY.works.map((work, i) => {
+    const id = extractYouTubeId(work.youtubeUrl);
+    const thumb = id
+      ? `https://img.youtube.com/vi/${id}/hqdefault.jpg`
+      : null;
+    const num = toRoman(i + 1);
+    const title = escapeHtml(work.title || `第 ${i+1} 號作品`);
+    const students = escapeHtml(work.students || '');
+
+    return `
+      <article class="poster" tabindex="0" role="button"
+               aria-label="觀賞 ${title}"
+               data-index="${i}">
+        <div class="poster-frame">
+          <div class="poster-thumb">
+            <div class="poster-number">No. ${num}</div>
+            ${thumb
+              ? `<img src="${thumb}" alt="" loading="lazy"
+                     onerror="this.style.background='var(--velvet)';this.style.opacity='0.4'">`
+              : `<div style="width:100%;height:100%;display:grid;place-items:center;color:var(--gold-deep);font-family:'Bodoni Moda',serif;font-style:italic">No video linked</div>`
+            }
+            ${id ? `<div class="play-button" aria-hidden="true"></div>` : ''}
+          </div>
+        </div>
+        <div class="poster-info">
+          <div class="poster-tag">A Short Film</div>
+          <h3 class="poster-title">${title}</h3>
+          <div class="poster-divider"></div>
+          ${students ? `
+            <div class="poster-students">
+              <span class="poster-students-label">Featuring</span>
+              ${students}
+            </div>
+          ` : ''}
+        </div>
+      </article>
+    `;
+  }).join('');
+
+  // Wire up clicks
+  gallery.querySelectorAll('.poster').forEach(el => {
+    const open = () => openModal(parseInt(el.dataset.index));
+    el.addEventListener('click', open);
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+    });
+  });
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])
+  );
+}
+
+// ─────────── Modal ───────────
+const modal = document.getElementById('modal');
+const modalVideo = document.getElementById('modalVideo');
+const modalTitle = document.getElementById('modalTitle');
+const modalStudents = document.getElementById('modalStudents');
+
+function openModal(index) {
+  const work = GALLERY.works[index];
+  if (!work) return;
+  const id = extractYouTubeId(work.youtubeUrl);
+  if (!id) {
+    alert('這個影片的網址有問題，請老師檢查 youtubeUrl');
+    return;
+  }
+
+  modalTitle.textContent = work.title || `第 ${index+1} 號作品`;
+  modalStudents.textContent = work.students || '';
+  modalVideo.innerHTML = `<iframe
+    src="https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1"
+    title="${escapeHtml(work.title || '影片')}"
+    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen></iframe>`;
+
+  modal.classList.add('visible');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  modal.classList.remove('visible');
+  modalVideo.innerHTML = ''; // stop the video
+  document.body.style.overflow = '';
+}
+
+document.getElementById('modalClose').addEventListener('click', closeModal);
+modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && modal.classList.contains('visible')) closeModal();
+});
+
+// ─────────── Init ───────────
+setupHeader();
+renderGallery();
+
+// Re-bulb on resize
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(setupHeader, 200);
+});
+</script>
+
+</body>
+</html>

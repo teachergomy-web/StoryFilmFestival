@@ -512,20 +512,6 @@ h1.cinema-name {
   margin-left: 5px;
 }
 
-.poster-number {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  background: var(--ink);
-  color: var(--gold);
-  font-family: 'Bodoni Moda', serif;
-  font-weight: 700;
-  font-size: 12px;
-  padding: 4px 10px;
-  letter-spacing: 0.15em;
-  border: 1px solid var(--gold-deep);
-  z-index: 3;
-}
 
 .poster-info {
   padding: 22px 20px 26px;
@@ -907,7 +893,6 @@ function renderGallery() {
     const thumb = id
       ? `https://img.youtube.com/vi/${id}/hqdefault.jpg`
       : null;
-    const num = toRoman(i + 1);
     const title = escapeHtml(work.title || `第 ${i+1} 號作品`);
     const students = escapeHtml(work.students || '');
 
@@ -916,8 +901,7 @@ function renderGallery() {
                aria-label="觀賞 ${title}"
                data-index="${i}">
         <div class="poster-frame">
-          <div class="poster-thumb">
-            <div class="poster-number">No. ${num}</div>
+          <div class="poster-thumb"></div>
             ${thumb
               ? `<img src="${thumb}" alt="" loading="lazy"
                      onerror="this.style.background='var(--velvet)';this.style.opacity='0.4'">`

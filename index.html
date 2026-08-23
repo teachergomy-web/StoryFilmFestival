@@ -9,10 +9,14 @@
 <!-- ═══════════════════════════════════════════════════
      老師看這裡！要新增作品就改下面這一段就好。
      1. 把 YouTube 網址貼到 youtubeUrl
-     2. 改 title（作品標題或第幾組）
-     3. 改 students（學生名字，用逗號分隔）
-     4. 想新增作品就複製一整段 { ... } 貼到下面，記得每段中間要有逗號
-     5. 想刪除某組就把那一段 { ... } 整個刪掉
+     2. 改 title（作品標題，不用再加班級，班級寫在 classLabel）
+     3. 改 classLabel（班級標籤，會顯示在海報縮圖左上角，
+        例如 '中低年級班' 或 '中高年級班'；不需要就整行刪掉）
+     4. 改 students（學生名字，用頓號分隔）
+     5. 想新增作品就複製一整段 { ... } 貼到下面，記得每段中間要有逗號
+     6. 想刪除某組就把那一段 { ... } 整個刪掉
+     7. instructors 是「指導老師」清單，會顯示在「學生作品」標題下方，
+        改 label（班級名稱）、names（老師名字，用頓號分隔）
      === 設定區開始 ═══════════════════════════════════ -->
 <script>
 const GALLERY = {
@@ -26,31 +30,67 @@ const GALLERY = {
   // 開場介紹（給家長看的歡迎詞，可改可留空）
   welcome: '歡迎蒞臨孩子們的故事影展。每一部作品都是老師與孩子們從畫角色、配音到剪輯的心血結晶。請好好享受這場屬於他們的演出吧!',
 
+  // 指導老師 ─────────────────────────────────
+  // 會顯示在「學生作品」標題下方一小行，不需要就把整個陣列改成 []
+  instructors: [
+    { label: '中低年級班', names: '文瑜老師' },
+    { label: '中高年級班', names: '舒涵老師、一璘姐姐' }
+  ],
+
   // 作品清單 ─────────────────────────────────
   works: [
     {
       title: '三隻小豬',
+      classLabel: '中低年級班',
       students: '育嵋、殷睿、歆甯、振鴻、德恩',
       youtubeUrl: 'https://youtu.be/VkfBDTdNvjQ'
     },
     {
       title: '小紅帽',
+      classLabel: '中低年級班',
       students: '若雅、柏瑜、坤德、思諺、紜霏',
       youtubeUrl: 'https://youtu.be/lfYUa2VmGV0'
     },
     {
       title: '醜小鴨',
+      classLabel: '中低年級班',
       students: '琮淳、子涵、秉侑、盛宇、均幼',
       youtubeUrl: 'https://youtu.be/zdkWqdNzBcE'
     },
     {
       title: '傑克與魔豆',
+      classLabel: '中低年級班',
       students: '芯妘、禹辰、良佑、妍婧、思瑜',
       youtubeUrl: 'https://youtu.be/pYeASzAEGog'
+    },
+    {
+      title: '三隻小豬',
+      classLabel: '中高年級班',
+      students: '柏羽、茹心、亦翔、崇恩、昇叡、子皓、彥喆',
+      youtubeUrl: 'https://youtu.be/-7vyXwTUiis'
+    },
+    {
+      title: '小紅帽',
+      classLabel: '中高年級班',
+      students: '苡媛、唯甄、芝芸、雅捷、宇茿',
+      youtubeUrl: 'https://youtu.be/6prTqxcM0CI'
+    },
+    {
+      title: '醜小鴨',
+      classLabel: '中高年級班',
+      students: '品妤、晨璦、媛淇、舜羚、民豈、侑芯',
+      youtubeUrl: 'https://youtu.be/HB81_hVGaDU'
+    },
+    {
+      title: '傑克與魔豆',
+      classLabel: '中高年級班',
+      students: '漢文、莛媗、詩允、旻軒、裕宏、彥喆',
+      youtubeUrl: 'https://youtu.be/BVmYLVa27Lc'
     }
     // 想新增就在上面那行的 } 後面加一個逗號，再貼一段：
     // ,{
     //   title: '作品名稱',
+    //   classLabel: '中低年級班',
     //   students: '學生1、學生2',
     //   youtubeUrl: 'https://www.youtube.com/watch?v=...'
     // }
@@ -407,6 +447,31 @@ h1.cinema-name {
   text-transform: uppercase;
 }
 
+.gallery-instructors {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 24px;
+}
+
+.gallery-instructor-item {
+  font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+  font-size: 13px;
+  color: var(--parchment);
+  font-style: italic;
+  letter-spacing: 0.05em;
+}
+
+.gallery-instructor-item .gallery-instructor-label {
+  font-family: 'Bodoni Moda', serif;
+  font-style: normal;
+  font-size: 10px;
+  color: var(--gold-deep);
+  letter-spacing: 0.15em;
+  margin-right: 6px;
+}
+
 .gallery {
   display: grid;
   grid-template-columns: 1fr;
@@ -512,6 +577,21 @@ h1.cinema-name {
   margin-left: 5px;
 }
 
+.poster-class-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: var(--ink);
+  color: var(--gold);
+  font-family: 'Bodoni Moda', serif;
+  font-weight: 700;
+  font-size: 12px;
+  padding: 4px 12px;
+  letter-spacing: 0.1em;
+  border: 1px solid var(--gold-deep);
+  z-index: 3;
+  white-space: nowrap;
+}
 
 .poster-info {
   padding: 22px 20px 26px;
@@ -795,6 +875,7 @@ h1.cinema-name {
   <div class="gallery-header">
     <h2 class="gallery-title">學生作品</h2>
     <div class="gallery-title-en">Featured Programmes</div>
+    <div class="gallery-instructors" id="galleryInstructors"></div>
   </div>
   <div class="gallery" id="gallery"></div>
 </section>
@@ -862,6 +943,15 @@ function setupHeader() {
   document.getElementById('welcomeText').textContent = GALLERY.welcome || '';
   document.title = (GALLERY.cinemaName || 'AI動畫師') + ' · ' + (GALLERY.season || '影展');
 
+  // Instructors line under "學生作品"
+  const instructorsEl = document.getElementById('galleryInstructors');
+  const instructors = GALLERY.instructors || [];
+  instructorsEl.innerHTML = instructors.map(item => `
+    <div class="gallery-instructor-item">
+      <span class="gallery-instructor-label">${escapeHtml(item.label || '')}</span>${escapeHtml(item.names || '')}
+    </div>
+  `).join('');
+
   // Bulbs - count adapts to viewport
   const makeBulbs = (id) => {
     const row = document.getElementById(id);
@@ -902,6 +992,7 @@ function renderGallery() {
                data-index="${i}">
         <div class="poster-frame">
           <div class="poster-thumb">
+            ${work.classLabel ? `<div class="poster-class-badge">${escapeHtml(work.classLabel)}</div>` : ''}
             ${thumb
               ? `<img src="${thumb}" alt="" loading="lazy"
                      onerror="this.style.background='var(--velvet)';this.style.opacity='0.4'">`
